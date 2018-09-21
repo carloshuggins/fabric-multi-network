@@ -31,9 +31,9 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
-export ORDERER_HOSTNAME="orderer-node"
-export ORG1_HOSTNAME="org1"
-export ORG2_HOSTNAME="org2"
+export ORDERER_HOSTNAME="landscape"
+export ORG1_HOSTNAME="BlackBox01"
+export ORG2_HOSTNAME="BlackBox02"
 export SWARM_NETWORK="fabric"
 export DOCKER_STACK="fabric"
 
@@ -112,7 +112,7 @@ function removeUnwantedImages() {
 }
 
 # Versions of fabric known not to work with this release of first-network
-BLACKLISTED_VERSIONS="^1\.0\. ^1\.1\.0-preview ^1\.1\.0-alpha"
+BLACKLISTED_VERSIONS="^1\.0\. ^1\.1\.0-preview ^1\.1\.0-alpha ^1\.1\."
 
 # Do some basic sanity checking to make sure that the appropriate versions of fabric
 # binaries/images are available.  In the future, additional checking for the presence
@@ -195,8 +195,8 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./org3-artifacts/crypto-config/ channel-artifacts/org3.json
     # remove the docker-compose yaml file that was customized to the example
-    rm -f docker-compose-org1.yaml
-    rm -f docker-compose-org2.yaml
+    rm -f docker-compose-machine1.yaml
+    rm -f docker-compose-machine2.yaml
   fi
 }
 
@@ -214,8 +214,8 @@ function replacePrivateKey() {
   fi
 
   # Copy the org1 & org2 templates to the files that will be modified to add the private key
-  cp docker-compose-org1-template.yaml docker-compose-org1.yaml
-  cp docker-compose-org2-template.yaml docker-compose-org2.yaml
+  cp docker-compose-machine1-template.yaml docker-compose-machine1.yaml
+  cp docker-compose-machine2-template.yaml docker-compose-machine2.yaml
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
@@ -223,15 +223,15 @@ function replacePrivateKey() {
   cd crypto-config/peerOrganizations/org1.example.com/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
-  sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-org1.yaml
-  cd crypto-config/peerOrganizations/org2.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-org2.yaml
+  sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-machine1.yaml
+  # cd crypto-config/peerOrganizations/org2.example.com/ca/
+  #PRIV_KEY=$(ls *_sk)
+  #cd "$CURRENT_DIR"
+  sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-machine2.yaml
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
-    rm docker-compose-org1.yamlt
-    rm docker-compose-org2.yamlt
+    rm docker-compose-machine1.yamlt
+    rm docker-compose-machine2.yamlt
   fi
 }
 
@@ -329,7 +329,7 @@ function generateChannelArtifacts() {
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
   set -x
-  configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+  configtxgen -profile OneOrgOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -341,7 +341,7 @@ function generateChannelArtifacts() {
   echo "### Generating channel configuration transaction 'channel.tx' ###"
   echo "#################################################################"
   set -x
-  configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
+  configtxgen -profile OneOrgChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -354,7 +354,7 @@ function generateChannelArtifacts() {
   echo "#######    Generating anchor peer update for Org1MSP   ##########"
   echo "#################################################################"
   set -x
-  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+  configtxgen -profile OneOrgChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -362,20 +362,20 @@ function generateChannelArtifacts() {
     exit 1
   fi
 
-  echo
-  echo "#################################################################"
-  echo "#######    Generating anchor peer update for Org2MSP   ##########"
-  echo "#################################################################"
-  set -x
-  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \
-    ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for Org2MSP..."
-    exit 1
-  fi
-  echo
+  #echo
+  #echo "#################################################################"
+  #echo "#######    Generating anchor peer update for Org2MSP   ##########"
+  #echo "#################################################################"
+  #set -x
+  #configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \
+  #  ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+  #res=$?
+  #set +x
+  #if [ $res -ne 0 ]; then
+  #  echo "Failed to generate anchor peer update for Org2MSP..."
+  #  exit 1
+  #fi
+  #echo
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct
@@ -387,7 +387,7 @@ CLI_TIMEOUT=10
 # default for delay between commands
 CLI_DELAY=3
 # channel name defaults to "mychannel"
-CHANNEL_NAME="mychannel"
+CHANNEL_NAME="gcchannel"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE=docker-compose-cli.yaml
 #
@@ -398,7 +398,7 @@ COMPOSE_FILE_ORG3=docker-compose-org3.yaml
 # use golang as the default language for chaincode
 LANGUAGE=golang
 # default image tag
-IMAGETAG="1.1.0"
+IMAGETAG="1.2.0"
 # Parse commandline args
 if [ "$1" = "-m" ]; then # supports old usage, muscle memory is powerful!
   shift
