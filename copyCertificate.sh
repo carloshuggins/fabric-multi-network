@@ -23,7 +23,11 @@ sed -i -e "s|$KEY2|$(awk 'NF {sub(/\r/, ""); printf "%s\\\\n",$0;}' $DIR/$WORKIN
 cp -p $DIR/$ORG1/signcerts/A*.pem $DIR/$WORKING_DIR
 cp -p $DIR/$ORG1/keystore/*_sk $DIR/$WORKING_DIR
 
-composer card create -p $DIR/multi-network.json -u PeerAdmin -c $DIR/$WORKING_DIR/Admin@org1.example.com-cert.pem -k $DIR/$WORKING_DIR/*_sk -r PeerAdmin -r ChannelAdmin -f $DIR/$WORKING_DIR/PeerAdmin@bymn-org1.$
+if composer card list -c PeerAdmin@bymn-org1 > /dev/null; then
+    composer card delete -c PeerAdmin@bymn-org1
+fi
+
+composer card create -p $DIR/multi-network.json -u PeerAdmin -c $DIR/$WORKING_DIR/Admin@org1.example.com-cert.pem -k $DIR/$WORKING_DIR/*_sk -r PeerAdmin -r ChannelAdmin -f $DIR/$WORKING_DIR/PeerAdmin@bymn-org1.card
 composer card import -f $DIR/$WORKING_DIR/PeerAdmin@bymn-org1.card --card PeerAdmin@bymn-org1
 
 
