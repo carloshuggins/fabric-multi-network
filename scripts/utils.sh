@@ -91,6 +91,7 @@ joinChannelWithRetry() {
 
   set -x
   peer channel join -b $CHANNEL_NAME.block >&log.txt
+  sleep 2
   res=$?
   set +x
   cat log.txt

@@ -95,7 +95,7 @@
     "certificateAuthorities": {
         "ca.org1.example.com": {
             "url": "https://BlackBox01:7054",
-            "caName": "ca-org1",
+            "caName": "ca1",
             "httpOptions": {
                 "verify": false
             }

@@ -76,8 +76,8 @@ joinChannel
 ## Set the anchor peers for each org in the channel
 echo "Updating anchor peers for org1..."
 updateAnchorPeers 0 1
-echo "Updating anchor peers for org2..."
-updateAnchorPeers 0 2
+#echo "Updating anchor peers for org2..."
+#updateAnchorPeers 0 2
 
 ## Install chaincode on peer0.org1 and peer1.org1
 echo "Installing chaincode on peer0.org1..."
