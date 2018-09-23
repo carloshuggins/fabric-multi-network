@@ -1,4 +1,4 @@
-#
+525#
 # Copyright IBM Corp All Rights Reserved
 #
 # SPDX-License-Identifier: Apache-2.0
@@ -166,7 +166,7 @@ chaincodeQuery() {
   ORG=$2
   setGlobals $PEER $ORG
   EXPECTED_RESULT=$3
-  echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
+  echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... expecting: '$EXPECTED_RESULT' ===================== "
   local rc=1
   local starttime=$(date +%s)
 
