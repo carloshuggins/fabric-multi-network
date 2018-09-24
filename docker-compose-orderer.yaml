@@ -20,7 +20,7 @@ networks:
 
 services:
   orderer:
-    container_name: orderer
+    #container_name: orderer
     image: hyperledger/fabric-orderer:$IMAGE_TAG
     environment:
       - ORDERER_GENERAL_LOGLEVEL=DEBUG
@@ -58,7 +58,7 @@ services:
         aliases:
           - orderer.example.com
   org1peer0:
-    container_name: org1peer0
+    #container_name: org1peer0
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock

@@ -1,4 +1,4 @@
-#
+car#
 # Copyright IBM Corp All Rights Reserved
 #
 # SPDX-License-Identifier: Apache-2.0
@@ -38,7 +38,11 @@ setGlobals() {
     if [ $PEER -eq 0 ]; then
       CORE_PEER_ADDRESS=peer0.org1.example.com:7051
     else
-      CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+      if [ $PEER -eq 1 ]; then
+        CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+      else 
+        CORE_PEER_ADDRESS=peer2.org1.example.com:7051
+      fi
     fi
   elif [ $ORG -eq 2 ]; then
     CORE_PEER_LOCALMSPID="Org2MSP"
