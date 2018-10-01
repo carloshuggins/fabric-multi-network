@@ -31,9 +31,9 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
-export ORDERER_HOSTNAME="landscape"
-export ORG1_HOSTNAME="BlackBox01"
-export ORG2_HOSTNAME="BlackBox02"
+export ORDERER_HOSTNAME="BlackBox01"
+export ORG1_HOSTNAME="BlackBox02"
+export ORG2_HOSTNAME="BlackBox03"
 export SWARM_NETWORK="fabric"
 export DOCKER_STACK="fabric"
 
