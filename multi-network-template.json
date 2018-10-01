@@ -54,7 +54,7 @@
     },
     "orderers": {
         "orderer.example.com": {
-            "url": "grpcs://landscape:7050",
+            "url": "grpcs://BlackBox01:7050",
             "grpcOptions": {
                 "ssl-target-name-override": "orderer.example.com"
             },
@@ -65,7 +65,7 @@
     },
     "peers": {
         "peer0.org1.example.com": {
-            "url": "grpcs://landscape:7051",
+            "url": "grpcs://BlackBox01:7051",
             "grpcOptions": {
                 "ssl-target-name-override": "peer0.org1.example.com"
             },
@@ -74,7 +74,7 @@
             }
         },
         "peer1.org1.example.com": {
-            "url": "grpcs://BlackBox01:8051",
+            "url": "grpcs://BlackBox02:8051",
             "grpcOptions": {
                 "ssl-target-name-override": "peer1.org1.example.com"
             },
@@ -83,7 +83,7 @@
             }
         },
         "peer2.org1.example.com": {
-            "url": "grpcs://BlackBox02:9051",
+            "url": "grpcs://BlackBox03:9051",
             "grpcOptions": {
                 "ssl-target-name-override": "peer2.org1.example.com"
             },
@@ -94,7 +94,7 @@
     },
     "certificateAuthorities": {
         "ca.org1.example.com": {
-            "url": "https://BlackBox01:7054",
+            "url": "https://BlackBox02:7054",
             "caName": "ca1",
             "httpOptions": {
                 "verify": false
